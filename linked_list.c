@@ -47,7 +47,6 @@ void ll_dispose(struct linked_list *ll, void (*clean_routine)(void *))
  */
 int ll_add_last(struct linked_list *ll, void *data)
 {
-	printf("Add last\n");
 	struct node *n = node_new();
 	if (n == NULL)
 		return -1;
@@ -58,17 +57,14 @@ int ll_add_last(struct linked_list *ll, void *data)
 	ll->tail = n;
 	if (ll->head == NULL)
 		ll->head = n;
-	printf("%d\n",(int) ll->size);
 	return 0;
 }
 
 void *ll_find(struct linked_list *ll, void *data, int (*cmpfn)(void *, void *))
 {
 	struct node *current = ll->head;
-	printf("Find in %d\n",(int) ll->size);
 	while (current != NULL) {
-		printf("LOOPING\n");
-		if (cmpfn(current,data) == 0)
+		if (cmpfn(current->data,data) == 0)
 			return current;
 		current = current->next;
 	}
