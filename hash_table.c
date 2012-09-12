@@ -27,7 +27,7 @@ struct hash_table
 {
 	struct linked_list *buckets[256];
 	int size;
-	void (*cmp)(void *, void *);
+	int (*cmp)(void *, void *);
 	void (*dispose)(void *);
 };
 
@@ -65,6 +65,7 @@ void re_dispose(void *re)
 	free(r->key);
 	free(((char *) r->value));
 	free(r);
+
 }
 
 int re_compare(void *r1, void *r2) 
@@ -74,10 +75,11 @@ int re_compare(void *r1, void *r2)
 	return strcmp(s1,s2);
 }
 
+
 /**
  * Create a new Hash Table and return it.
  */
-struct hash_table *ht_new(void (*cmp)(void *, void *), void (*dispose)(void *))
+struct hash_table *ht_new(int (*cmp)(void *, void *), void (*dispose)(void *))
 {
 	struct hash_table *ht = (struct hash_table *) malloc(sizeof(struct hash_table));
 	if (ht == NULL)
@@ -98,7 +100,7 @@ void ht_dispose(struct hash_table *ht)
 {
 	int i = 0;
 	for (i = 0; i < 256; i++)
-		ll_dispose(ht->buckets[i], re_dispose);
+		ll_dispose(ht->buckets[i], ht->dispose);
 	free(ht);
 }
 /**
@@ -109,7 +111,7 @@ struct record *ht_get_entry(struct hash_table *ht, char *key)
 	int h = hash(key);
 	struct record r;
 	r.key = key;
-	return ll_find(ht->buckets[h], (void *) &r, re_compare);
+	return ll_find(ht->buckets[h], (void *) &r, ht->cmp);
 }
 
 int ht_put_entry(struct hash_table *ht, char *key, void *value, size_t size)
@@ -120,7 +122,7 @@ int ht_put_entry(struct hash_table *ht, char *key, void *value, size_t size)
 
 int ht_remove_entry(struct hash_table *ht, char *key)
 {
-	ll_remove(ht->buckets[hash(key)], (void *) key, re_dispose,  re_compare);
+	ll_remove(ht->buckets[hash(key)], (void *) key, ht->dispose,  ht->cmp);
 	ht->size --;
 }
 
