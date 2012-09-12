@@ -11,6 +11,7 @@
 struct node *node_new()
 {
 	struct node *n = (struct node *) malloc(sizeof(struct node));
+	n->next = NULL;
 	return n;
 }
 
@@ -31,7 +32,8 @@ struct linked_list *ll_new()
 }
 void ll_dispose(struct linked_list *ll, void (*clean_routine)(void *))
 {
-	struct node *current = ll->head;
+	struct node *current = NULL;
+	current = ll->head;
 	struct node *next;
 	while (current != NULL) {
 		next = current->next;

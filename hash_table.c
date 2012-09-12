@@ -75,7 +75,6 @@ int re_compare(void *r1, void *r2)
 	return strcmp(s1,s2);
 }
 
-
 /**
  * Create a new Hash Table and return it.
  */
@@ -142,6 +141,8 @@ int main(void)
 	ht_put_entry(ht, "bob", c, 4*sizeof(char)); 
 	printf("%d\n",ht_contains(ht,"bob"));
 	printf("%d\n",ht_contains(ht,"jack"));
+	free(c);
 	ht_dispose(ht);
+
 }
 
